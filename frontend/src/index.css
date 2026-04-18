@@ -1,0 +1,55 @@
+@import url("https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=El+Messiri:wght@400..700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --color-blue: #0a445f;
+  --color-white: #ffffff;
+  --color-gold: #ffa630;
+  --color-red: #dc2800;
+  --color-black: #1a1a1a;
+  --color-grey: #333333;
+
+  --font-one: "El Messiri", sans-serif;
+  --font-two: "Cairo", sans-serif;
+}
+
+body {
+  background-color: var(--color-white);
+
+  font-family: "Cairo", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "El Messiri", sans-serif;
+}
+
+.container {
+  @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.marquee-track {
+  display: flex;
+  /* gap: 2rem; */
+  width: max-content;
+
+  animation: marquee 20s linear infinite;
+
+  will-change: transform;
+  transform: translate3d(0, 0, 0); /* GPU */
+}
+
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
