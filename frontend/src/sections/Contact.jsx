@@ -38,28 +38,16 @@ export default function Contact() {
           {/* RIGHT SIDE - Contact Information */}
           <div className="space-y-6 sm:space-y-8">
             {/* Logo */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: 0.1 }}
-              className="flex justify-center md:justify-start"
-            >
+            <div className="flex justify-center md:justify-start">
               <img
                 src={logo}
                 alt="logo"
                 className="w-40 sm:w-48 lg:w-56 xl:w-64 object-contain invert-70"
               />
-            </motion.div>
+            </div>
 
             {/* Title */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: 0.2 }}
-              className="text-right"
-            >
+            <div className="text-right">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--color-black)]">
                 تواصل معنا
               </h2>
@@ -67,16 +55,10 @@ export default function Contact() {
                 نحن هنا للإجابة على جميع استفساراتك ومساعدتك في حجز رحلتك
                 البحرية
               </p>
-            </motion.div>
+            </div>
 
             {/* Location Cards */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: 0.3 }}
-              className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg border border-gray-100"
-            >
+            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg border border-gray-100">
               <h3 className="text-lg sm:text-xl font-bold text-[var(--color-blue)] mb-3 sm:mb-4 flex items-center gap-2">
                 <span>مواقعنا</span>
                 <FontAwesomeIcon
@@ -114,16 +96,10 @@ export default function Contact() {
                   </span>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
             {/* Contact Details */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: 0.4 }}
-              className="space-y-3 sm:space-y-4 text-right"
-            >
+            <div className="space-y-3 sm:space-y-4 text-right">
               <div className="flex items-center gap-3">
                 <FontAwesomeIcon
                   icon={faMapPin}
@@ -156,16 +132,10 @@ export default function Contact() {
                   0661348707
                 </a>
               </div>
-            </motion.div>
+            </div>
 
             {/* Social Media */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: 0.5 }}
-              className="flex gap-5 sm:gap-6 text-xl sm:text-2xl justify-center md:justify-start"
-            >
+            <div className="flex gap-5 sm:gap-6 text-xl sm:text-2xl justify-center md:justify-start">
               <a
                 href="#"
                 className="text-[var(--color-grey)] hover:text-[var(--color-blue)] transition-all transform hover:scale-110"
@@ -187,17 +157,11 @@ export default function Contact() {
               >
                 <FontAwesomeIcon icon={faWhatsapp} />
               </a>
-            </motion.div>
+            </div>
           </div>
 
           {/* LEFT SIDE - Map */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: 0.3 }}
-            className="w-full"
-          >
+          <div className="w-full">
             <div className="relative">
               <div className="w-full h-[350px] sm:h-[400px] lg:h-[450px] xl:h-[500px] rounded-2xl overflow-hidden shadow-xl border-4 border-white">
                 <iframe
@@ -224,7 +188,7 @@ export default function Contact() {
             <p className="text-center text-xs sm:text-sm text-[var(--color-grey)] mt-2 sm:mt-3">
               اضغط على الخريطة للتنقل أو استخدم زر الفتح للحصول على الاتجاهات
             </p>
-          </motion.div>
+          </div>
         </div>
 
         {/* Bottom Line */}
