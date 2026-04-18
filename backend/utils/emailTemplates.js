@@ -1,4 +1,3 @@
-// Generate Arabic email for new booking notification (to Admin)
 export const generateAdminNotificationEmail = (order) => {
   const formattedDate = new Date(order.bookingDate).toLocaleDateString(
     "ar-DZ",
@@ -46,21 +45,23 @@ export const generateAdminNotificationEmail = (order) => {
           .header {
             background: linear-gradient(135deg, #1a237e, #0d47a1);
             color: white;
-            padding: 25px;
+            padding: 30px 25px;
             text-align: center;
           }
-          .header h1 {
-            margin: 0;
-            font-size: 24px;
+          .header-logo {
+            max-width: 180px;
+            height: auto;
+            margin-bottom: 15px;
           }
           .header .badge {
             display: inline-block;
             background-color: #ffd700;
             color: #000;
-            padding: 5px 15px;
-            border-radius: 20px;
+            padding: 6px 20px;
+            border-radius: 30px;
             font-size: 14px;
-            margin-top: 10px;
+            font-weight: bold;
+            margin-top: 5px;
           }
           .content {
             padding: 25px;
@@ -184,8 +185,8 @@ export const generateAdminNotificationEmail = (order) => {
       <body>
         <div class="container">
           <div class="header">
-            <h1>🛥️ Golden Hour</h1>
-            <div class="badge">حجز جديد</div>
+            <img src="https://i.ibb.co/DPJ9Lc95/logo01.png" alt="Golden Hour" class="header-logo">
+            <div class="badge">🛥️ حجز جديد</div>
           </div>
           
           <div class="content">
@@ -368,21 +369,23 @@ export const generateCustomerConfirmationEmail = (order) => {
           .header {
             background: linear-gradient(135deg, #1a237e, #0d47a1);
             color: white;
-            padding: 25px;
+            padding: 30px 25px;
             text-align: center;
           }
-          .header h1 {
-            margin: 0;
-            font-size: 24px;
+          .header-logo {
+            max-width: 180px;
+            height: auto;
+            margin-bottom: 15px;
           }
           .header .badge {
             display: inline-block;
             background-color: #4caf50;
             color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
+            padding: 6px 20px;
+            border-radius: 30px;
             font-size: 14px;
-            margin-top: 10px;
+            font-weight: bold;
+            margin-top: 5px;
           }
           .content {
             padding: 25px;
@@ -486,8 +489,8 @@ export const generateCustomerConfirmationEmail = (order) => {
       <body>
         <div class="container">
           <div class="header">
-            <h1>🛥️ Golden Hour</h1>
-            <div class="badge">تم استلام طلبك</div>
+            <img src="https://i.ibb.co/DPJ9Lc95/logo01.png" alt="Golden Hour" class="header-logo">
+            <div class="badge">✅ تم استلام طلبك</div>
           </div>
           
           <div class="content">

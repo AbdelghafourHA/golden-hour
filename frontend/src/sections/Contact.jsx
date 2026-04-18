@@ -63,7 +63,7 @@ export default function Contact() {
               <h2 className="text-3xl md:text-4xl font-bold text-[var(--color-black)]">
                 تواصل معنا
               </h2>
-              <p className="text-[var(--color-grey)] mt-2 text-lg">
+              <p className="text-[var(--color-grey)] mt-2 text-base">
                 نحن هنا للإجابة على جميع استفساراتك ومساعدتك في حجز رحلتك
                 البحرية
               </p>
