@@ -125,12 +125,12 @@ export default function Contact() {
                   icon={faPhone}
                   className="text-[var(--color-gold)] text-base sm:text-lg w-5 sm:w-6"
                 />
-                <a
+                {/* <a
                   href="tel:+213661348707"
                   className="text-[var(--color-grey)] hover:text-[var(--color-blue)] transition-colors text-sm sm:text-base"
                 >
                   0661348707
-                </a>
+                </a> */}
               </div>
             </div>
 
