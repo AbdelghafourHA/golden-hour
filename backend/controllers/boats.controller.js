@@ -27,16 +27,16 @@ export const addBoat = async (req, res) => {
     } = req.body;
     const file = req.file;
 
-    console.log("Request body:", {
-      title,
-      place,
-      description,
-      price1h,
-      price2h,
-      price3h,
-      price4h,
-      capacity,
-    });
+    // console.log("Request body:", {
+    //   title,
+    //   place,
+    //   description,
+    //   price1h,
+    //   price2h,
+    //   price3h,
+    //   price4h,
+    //   capacity,
+    // });
 
     if (!file) {
       return res.status(400).json({ message: "Boat image is required" });

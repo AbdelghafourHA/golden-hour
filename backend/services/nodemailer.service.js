@@ -18,7 +18,7 @@ export const sendAdminNotification = async (order) => {
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log("✅ Admin notification sent:", info.messageId);
+    // console.log("✅ Admin notification sent:", info.messageId);
     return { success: true, messageId: info.messageId };
   } catch (error) {
     console.error("❌ Failed to send admin notification:", error);
@@ -30,7 +30,7 @@ export const sendAdminNotification = async (order) => {
 export const sendCustomerConfirmation = async (order) => {
   try {
     if (!order.customerEmail) {
-      console.log("ℹ️ No customer email provided, skipping confirmation");
+      // console.log("ℹ️ No customer email provided, skipping confirmation");
       return { success: false, reason: "No email provided" };
     }
 
@@ -44,7 +44,7 @@ export const sendCustomerConfirmation = async (order) => {
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log("✅ Customer confirmation sent:", info.messageId);
+    // console.log("✅ Customer confirmation sent:", info.messageId);
     return { success: true, messageId: info.messageId };
   } catch (error) {
     console.error("❌ Failed to send customer confirmation:", error);
@@ -52,19 +52,16 @@ export const sendCustomerConfirmation = async (order) => {
   }
 };
 
-// Send both notifications
 export const sendBookingNotifications = async (order) => {
-  // Send to admin (always)
-  const adminResult = await sendAdminNotification(order);
-
-  // Send to customer (if email provided)
-  let customerResult = null;
-  if (order.customerEmail) {
-    customerResult = await sendCustomerConfirmation(order);
+  try {
+    const adminResult = await sendAdminNotification(order);
+    let customerResult = null;
+    if (order.customerEmail) {
+      customerResult = await sendCustomerConfirmation(order);
+    }
+    return { admin: adminResult, customer: customerResult };
+  } catch (error) {
+    logger.error("Email notification failed (non-blocking):", error.message);
+    return { success: false, error: error.message };
   }
-
-  return {
-    admin: adminResult,
-    customer: customerResult,
-  };
 };

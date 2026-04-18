@@ -9,6 +9,7 @@ import {
   getBoatOrdersByDate,
   getOrderStats,
   cancelOrder,
+  bulkDeleteOrders,
 } from "../controllers/orders.controller.js";
 import protect from "../middlewares/auth.middleware.js";
 
@@ -57,5 +58,7 @@ router.put("/:id/status", protect, updateOrderStatus);
 // Delete order (admin only)
 // DELETE /api/orders/:id
 router.delete("/:id", protect, deleteOrder);
+
+router.delete("/bulk", protect, bulkDeleteOrders);
 
 export default router;

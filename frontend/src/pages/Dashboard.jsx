@@ -679,16 +679,15 @@ const EditBoatModal = ({ boat, onClose, onSave, isSubmitting }) => {
   );
 };
 
-// ... Keep OrdersTable component exactly as is ...
-// Updated OrdersTable for real API data
-// Updated OrdersTable for real API data
-// Updated OrdersTable for real API data
+// Updated OrdersTable component with pagination
 const OrdersTable = ({
   orders,
   loading,
   onUpdateStatus,
   onDeleteOrder,
   onDeleteAllOrders,
+  pagination,
+  onPageChange,
 }) => {
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
@@ -710,7 +709,7 @@ const OrdersTable = ({
     if (selectAll) {
       setSelectedOrders([]);
     } else {
-      setSelectedOrders(filtered.map((o) => o._id)); // FIX: Use _id
+      setSelectedOrders(filtered.map((o) => o._id));
     }
     setSelectAll(!selectAll);
   };
@@ -796,9 +795,101 @@ const OrdersTable = ({
     );
   };
 
+  // FIX: Pagination component - always show if totalOrders > 0
+  const PaginationControls = () => {
+    const { currentPage, totalPages, totalOrders } = pagination || {};
+
+    // FIX: Show pagination if there are ANY orders in total, not just current page
+    if (!totalOrders || totalOrders === 0) return null;
+    if (!totalPages || totalPages <= 1) return null;
+
+    const pages = [];
+    const maxVisiblePages = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+    if (endPage - startPage + 1 < maxVisiblePages) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    return (
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-4 pt-4 border-t border-gray-200">
+        <div className="text-sm text-grey">
+          عرض {(currentPage - 1) * 10 + 1} -{" "}
+          {Math.min(currentPage * 10, totalOrders)} من أصل {totalOrders} حجز
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => onPageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-3 py-1.5 rounded-lg border border-gray-300 text-grey hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+          >
+            السابق
+          </button>
+
+          {startPage > 1 && (
+            <>
+              <button
+                onClick={() => onPageChange(1)}
+                className="w-8 h-8 rounded-lg border border-gray-300 text-grey hover:bg-gray-50 transition"
+              >
+                1
+              </button>
+              {startPage > 2 && <span className="text-grey">...</span>}
+            </>
+          )}
+
+          {pages.map((page) => (
+            <button
+              key={page}
+              onClick={() => onPageChange(page)}
+              className={`w-8 h-8 rounded-lg transition ${
+                currentPage === page
+                  ? "bg-blue text-white"
+                  : "border border-gray-300 text-grey hover:bg-gray-50"
+              }`}
+            >
+              {page}
+            </button>
+          ))}
+
+          {endPage < totalPages && (
+            <>
+              {endPage < totalPages - 1 && (
+                <span className="text-grey">...</span>
+              )}
+              <button
+                onClick={() => onPageChange(totalPages)}
+                className="w-8 h-8 rounded-lg border border-gray-300 text-grey hover:bg-gray-50 transition"
+              >
+                {totalPages}
+              </button>
+            </>
+          )}
+
+          <button
+            onClick={() => onPageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-3 py-1.5 rounded-lg border border-gray-300 text-grey hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+          >
+            التالي
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  // FIX: Check if there are ANY orders in the system (not just filtered)
+  const hasAnyOrders = pagination?.totalOrders > 0;
+
   return (
     <div className="space-y-4">
-      {/* Filters Bar */}
+      {/* Filters Bar - Always show */}
       <div className="flex flex-col sm:flex-row gap-3 justify-between">
         <div className="relative flex-1">
           <Search
@@ -839,160 +930,176 @@ const OrdersTable = ({
       </div>
 
       {/* Loading State */}
-      {loading && orders.length === 0 ? (
+      {loading ? (
         <div className="text-center py-12 bg-white rounded-2xl">
           جاري تحميل الحجوزات...
         </div>
-      ) : filtered.length === 0 ? (
+      ) : !hasAnyOrders ? (
+        // FIX: Show empty state only if there are truly NO orders at all
         <div className="text-center py-12 bg-white rounded-2xl">
           لا توجد حجوزات
         </div>
+      ) : filtered.length === 0 ? (
+        // FIX: Show "no results" for current filters, but keep pagination
+        <>
+          <div className="text-center py-12 bg-white rounded-2xl">
+            لا توجد نتائج مطابقة للبحث
+          </div>
+          <PaginationControls />
+        </>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-gray-200">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-4 py-3 text-right text-xs font-medium text-grey uppercase">
-                  <input
-                    type="checkbox"
-                    checked={selectAll && filtered.length > 0}
-                    onChange={handleSelectAll}
-                    className="rounded border-gray-300 text-blue focus:ring-blue"
-                  />
-                </th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-grey uppercase">
-                  العميل
-                </th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-grey uppercase">
-                  الهاتف
-                </th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-grey uppercase">
-                  القارب
-                </th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-grey uppercase">
-                  المكان
-                </th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-grey uppercase">
-                  التاريخ
-                </th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-grey uppercase">
-                  الوقت
-                </th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-grey uppercase">
-                  المدة
-                </th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-grey uppercase">
-                  السعر
-                </th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-grey uppercase">
-                  الحالة
-                </th>
-                <th className="px-4 py-3 text-right text-xs font-medium text-grey uppercase">
-                  إجراءات
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-100">
-              {filtered.map((order) => (
-                <tr key={order._id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3">
+        <>
+          <div className="overflow-x-auto rounded-xl border border-gray-200">
+            <table className="min-w-[1000px] md:min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-4 py-3 text-right text-xs font-medium text-grey uppercase">
                     <input
                       type="checkbox"
-                      checked={selectedOrders.includes(order._id)}
-                      onChange={() => handleSelectOrder(order._id)}
+                      checked={selectAll && filtered.length > 0}
+                      onChange={handleSelectAll}
                       className="rounded border-gray-300 text-blue focus:ring-blue"
                     />
-                  </td>
-                  <td className="px-4 py-3 text-sm font-medium">
-                    {order.customerName}
-                  </td>
-                  <td className="px-4 py-3 text-sm dir-ltr">
-                    {order.customerPhone}
-                  </td>
-                  <td className="px-4 py-3 text-sm">{order.boatName}</td>
-                  <td className="px-4 py-3 text-sm">{order.boatPlace}</td>
-                  <td className="px-4 py-3 text-sm">
-                    {formatDate(order.bookingDate)}
-                  </td>
-                  <td className="px-4 py-3 text-sm">{order.startTime}</td>
-                  <td className="px-4 py-3 text-sm">
-                    {getDurationText(order.duration)}
-                  </td>
-                  <td className="px-4 py-3 text-sm">
-                    {order.totalPrice?.toLocaleString()} دج
-                  </td>
-                  <td className="px-4 py-3">
-                    <StatusBadge status={order.status} />
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex gap-2">
-                      {order.status === "pending" && (
-                        <>
+                  </th>
+                  <th className="px-4 py-3 text-right text-xs font-medium text-grey uppercase">
+                    العميل
+                  </th>
+                  <th className="px-4 py-3 text-right text-xs font-medium text-grey uppercase">
+                    الهاتف
+                  </th>
+                  <th className="px-4 py-3 text-right text-xs font-medium text-grey uppercase">
+                    القارب
+                  </th>
+                  <th className="px-4 py-3 text-right text-xs font-medium text-grey uppercase">
+                    المكان
+                  </th>
+                  <th className="px-4 py-3 text-right text-xs font-medium text-grey uppercase">
+                    التاريخ
+                  </th>
+                  <th className="px-4 py-3 text-right text-xs font-medium text-grey uppercase">
+                    الوقت
+                  </th>
+                  <th className="px-4 py-3 text-right text-xs font-medium text-grey uppercase">
+                    المدة
+                  </th>
+                  <th className="px-4 py-3 text-right text-xs font050 uppercase">
+                    السعر
+                  </th>
+                  <th className="px-4 py-3 text-right text-xs font-medium text-grey uppercase">
+                    الحالة
+                  </th>
+                  <th className="px-4 py-3 text-right text-xs font-medium text-grey uppercase">
+                    إجراءات
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-100">
+                {filtered.map((order) => (
+                  <tr key={order._id} className="hover:bg-gray-50">
+                    <td className="px-4 py-3">
+                      <input
+                        type="checkbox"
+                        checked={selectedOrders.includes(order._id)}
+                        onChange={() => handleSelectOrder(order._id)}
+                        className="rounded border-gray-300 text-blue focus:ring-blue"
+                      />
+                    </td>
+                    <td className="px-4 py-3 text-sm font-medium">
+                      {order.customerName}
+                    </td>
+                    <td className="px-4 py-3 text-sm dir-ltr">
+                      {order.customerPhone}
+                    </td>
+                    <td className="px-4 py-3 text-sm">{order.boatName}</td>
+                    <td className="px-4 py-3 text-sm">{order.boatPlace}</td>
+                    <td className="px-4 py-3 text-sm">
+                      {formatDate(order.bookingDate)}
+                    </td>
+                    <td className="px-4 py-3 text-sm">{order.startTime}</td>
+                    <td className="px-4 py-3 text-sm">
+                      {getDurationText(order.duration)}
+                    </td>
+                    <td className="px-4 py-3 text-sm">
+                      {order.totalPrice?.toLocaleString()} دج
+                    </td>
+                    <td className="px-4 py-3">
+                      <StatusBadge status={order.status} />
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex gap-2">
+                        {order.status === "pending" && (
+                          <>
+                            <button
+                              onClick={() =>
+                                onUpdateStatus(order._id, "confirmed")
+                              }
+                              className="text-green-600 hover:text-green-800"
+                              title="تأكيد"
+                            >
+                              <CheckCircle size={18} />
+                            </button>
+                            <button
+                              onClick={() =>
+                                onUpdateStatus(order._id, "cancelled")
+                              }
+                              className="text-red-600 hover:text-red-800"
+                              title="إلغاء"
+                            >
+                              <XCircle size={18} />
+                            </button>
+                          </>
+                        )}
+                        {order.status === "confirmed" && (
+                          <>
+                            <button
+                              onClick={() =>
+                                onUpdateStatus(order._id, "completed")
+                              }
+                              className="text-blue-600 hover:text-blue-800"
+                              title="مكتمل"
+                            >
+                              <CheckCircle size={18} />
+                            </button>
+                            <button
+                              onClick={() =>
+                                onUpdateStatus(order._id, "cancelled")
+                              }
+                              className="text-red-600 hover:text-red-800"
+                              title="إلغاء"
+                            >
+                              <XCircle size={18} />
+                            </button>
+                          </>
+                        )}
+                        {order.status === "cancelled" && (
                           <button
                             onClick={() =>
                               onUpdateStatus(order._id, "confirmed")
                             }
                             className="text-green-600 hover:text-green-800"
-                            title="تأكيد"
+                            title="إعادة تأكيد"
                           >
                             <CheckCircle size={18} />
                           </button>
-                          <button
-                            onClick={() =>
-                              onUpdateStatus(order._id, "cancelled")
-                            }
-                            className="text-red-600 hover:text-red-800"
-                            title="إلغاء"
-                          >
-                            <XCircle size={18} />
-                          </button>
-                        </>
-                      )}
-                      {order.status === "confirmed" && (
-                        <>
-                          <button
-                            onClick={() =>
-                              onUpdateStatus(order._id, "completed")
-                            }
-                            className="text-blue-600 hover:text-blue-800"
-                            title="مكتمل"
-                          >
-                            <CheckCircle size={18} />
-                          </button>
-                          <button
-                            onClick={() =>
-                              onUpdateStatus(order._id, "cancelled")
-                            }
-                            className="text-red-600 hover:text-red-800"
-                            title="إلغاء"
-                          >
-                            <XCircle size={18} />
-                          </button>
-                        </>
-                      )}
-                      {order.status === "cancelled" && (
+                        )}
                         <button
-                          onClick={() => onUpdateStatus(order._id, "confirmed")}
-                          className="text-green-600 hover:text-green-800"
-                          title="إعادة تأكيد"
+                          onClick={() => onDeleteOrder(order._id)}
+                          className="text-red-600 hover:text-red-800"
+                          title="حذف"
                         >
-                          <CheckCircle size={18} />
+                          <Trash2 size={18} />
                         </button>
-                      )}
-                      <button
-                        onClick={() => onDeleteOrder(order._id)}
-                        className="text-red-600 hover:text-red-800"
-                        title="حذف"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* FIX: Pagination always shows if there are total orders */}
+          <PaginationControls />
+        </>
       )}
     </div>
   );
@@ -1035,7 +1142,7 @@ const Dashboard = () => {
   }, [fetchBoats]);
 
   useEffect(() => {
-    fetchOrders({ page: 1, limit: 50 });
+    fetchOrders({ page: 1, limit: 10 });
     fetchStats();
   }, [fetchOrders, fetchStats]);
 
@@ -1254,7 +1361,7 @@ const Dashboard = () => {
             </div>
           )}
 
-          {/* Orders Tab - Updated */}
+          {/* Orders Tab - Updated with Pagination */}
           {activeTab === "orders" && (
             <div>
               <div className="mb-6">
@@ -1267,6 +1374,8 @@ const Dashboard = () => {
                 onUpdateStatus={handleUpdateOrderStatus}
                 onDeleteOrder={handleDeleteOrder}
                 onDeleteAllOrders={handleDeleteAllOrders}
+                pagination={pagination}
+                onPageChange={(page) => fetchOrders({ page, limit: 10 })}
               />
             </div>
           )}

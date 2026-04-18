@@ -4,7 +4,6 @@ import { toast } from "react-hot-toast";
 import useBoatsStore from "../stores/boats.store";
 import useOrdersStore from "../stores/orders.store";
 
-// All possible time slots
 const ALL_TIME_SLOTS = [
   "09:00",
   "10:30",
@@ -25,7 +24,6 @@ export default function Booking() {
     createOrder,
   } = useOrdersStore();
 
-  // Form state
   const [selectedBoatId, setSelectedBoatId] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   const [duration, setDuration] = useState(1);
@@ -68,12 +66,10 @@ export default function Booking() {
     setSelectedTimeSlot("");
   }, [duration]);
 
-  // Get taken slots (all slots - available slots)
   const takenSlots = useMemo(() => {
     return ALL_TIME_SLOTS.filter((slot) => !availableSlots.includes(slot));
   }, [availableSlots]);
 
-  // Check if selected time slot is valid for the duration
   const isSlotValidForDuration = (slot, dur) => {
     const startIndex = ALL_TIME_SLOTS.indexOf(slot);
     if (startIndex === -1) return false;
@@ -87,23 +83,16 @@ export default function Booking() {
     return true;
   };
 
-  // Get available slots that can accommodate the selected duration
   const validSlotsForDuration = useMemo(() => {
     return availableSlots.filter((slot) =>
       isSlotValidForDuration(slot, duration)
     );
   }, [availableSlots, duration]);
 
-  // Get slot status (available, taken, or available-for-other-duration)
   const getSlotStatus = (slot) => {
     if (takenSlots.includes(slot)) return "taken";
     if (validSlotsForDuration.includes(slot)) return "available";
     return "available-other-duration";
-  };
-
-  // Get slot label
-  const getSlotLabel = (slot) => {
-    return slot;
   };
 
   const calculatedPrice = useMemo(() => {
@@ -191,7 +180,7 @@ export default function Booking() {
       setSelectedDate("");
       setSelectedTimeSlot("");
       setDuration(1);
-      toast.success("تم إرسال طلب الحجز بنجاح! سنتواصل معك قريباً للتأكيد.");
+      // toast.success("تم إرسال طلب الحجز بنجاح! سنتواصل معك قريباً للتأكيد.");
     }
   };
 
@@ -205,7 +194,6 @@ export default function Booking() {
     return labels[dur] || `${dur} ساعات`;
   };
 
-  // Helper to get Arabic place name
   const getPlaceArabic = (place) => {
     const placeMap = {
       "ميناء تيبازة": "ميناء تيبازة",
@@ -217,11 +205,11 @@ export default function Booking() {
 
   if (boatsLoading && boats.length === 0) {
     return (
-      <section className="py-20 bg-white">
-        <div className="container text-center">
+      <section className="py-12 sm:py-16 md:py-20 bg-white">
+        <div className="container px-4 sm:px-6 text-center">
           <div className="animate-pulse">
-            <div className="h-8 bg-gray-200 rounded w-64 mx-auto mb-4"></div>
-            <div className="h-4 bg-gray-200 rounded w-96 mx-auto"></div>
+            <div className="h-8 bg-gray-200 rounded w-48 sm:w-64 mx-auto mb-4"></div>
+            <div className="h-4 bg-gray-200 rounded w-64 sm:w-96 mx-auto"></div>
           </div>
         </div>
       </section>
@@ -231,29 +219,29 @@ export default function Booking() {
   return (
     <motion.section
       id="Booking"
-      initial={{ opacity: 0, y: -60 }}
+      initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.35 }}
-      transition={{ duration: 0.7, ease: "easeOut" }}
-      className="py-20 bg-white"
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="py-12 sm:py-16 md:py-20 bg-white"
       dir="rtl"
     >
-      <div className="container">
-        {/* Title - Arabic */}
-        <div className="text-center mb-14">
-          <h2 className="text-3xl md:text-4xl font-bold text-[var(--color-black)]">
+      <div className="container px-4 sm:px-6">
+        {/* Title */}
+        <div className="text-center mb-8 sm:mb-12 md:mb-14">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--color-black)]">
             احجز رحلتك الآن
           </h2>
-          <p className="text-[var(--color-grey)] mt-3">
+          <p className="text-[var(--color-grey)] mt-2 sm:mt-3 text-sm sm:text-base">
             اختر القارب والوقت المناسب وسنؤكد حجزك مباشرة
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-10">
-          {/* LEFT: FORM - Arabic */}
-          <div className="bg-gray-50 rounded-2xl p-6 md:p-8 shadow-md">
-            <form onSubmit={handleSubmit} className="grid gap-5">
-              {/* Name - Arabic */}
+        <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-10">
+          {/* LEFT: FORM */}
+          <div className="bg-gray-50 rounded-2xl p-4 sm:p-6 md:p-8 shadow-md">
+            <form onSubmit={handleSubmit} className="grid gap-4 sm:gap-5">
+              {/* Name */}
               <div>
                 <label className="block text-sm font-medium text-grey mb-1">
                   الاسم الكامل *
@@ -264,12 +252,12 @@ export default function Booking() {
                   value={formData.customerName}
                   onChange={handleInputChange}
                   placeholder="أدخل اسمك الكامل"
-                  className="w-full border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-[var(--color-gold)] transition"
+                  className="w-full border rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base outline-none focus:ring-2 focus:ring-[var(--color-gold)] transition"
                   required
                 />
               </div>
 
-              {/* Phone - Arabic */}
+              {/* Phone */}
               <div>
                 <label className="block text-sm font-medium text-grey mb-1">
                   رقم الهاتف *
@@ -280,13 +268,13 @@ export default function Booking() {
                   value={formData.customerPhone}
                   onChange={handleInputChange}
                   placeholder="مثال: 0550123456"
-                  className="w-full border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-[var(--color-gold)] transition"
+                  className="w-full border rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base outline-none focus:ring-2 focus:ring-[var(--color-gold)] transition"
                   dir="ltr"
                   required
                 />
               </div>
 
-              {/* Email - Arabic */}
+              {/* Email */}
               <div>
                 <label className="block text-sm font-medium text-grey mb-1">
                   البريد الإلكتروني (اختياري)
@@ -297,12 +285,12 @@ export default function Booking() {
                   value={formData.customerEmail}
                   onChange={handleInputChange}
                   placeholder="example@email.com"
-                  className="w-full border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-[var(--color-gold)] transition"
+                  className="w-full border rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base outline-none focus:ring-2 focus:ring-[var(--color-gold)] transition"
                   dir="ltr"
                 />
               </div>
 
-              {/* Boat Selection - Arabic */}
+              {/* Boat Selection */}
               <div>
                 <label className="block text-sm font-medium text-grey mb-1">
                   اختر القارب *
@@ -310,7 +298,7 @@ export default function Booking() {
                 <select
                   value={selectedBoatId}
                   onChange={(e) => setSelectedBoatId(e.target.value)}
-                  className="w-full border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-[var(--color-gold)] transition bg-white"
+                  className="w-full border rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base outline-none focus:ring-2 focus:ring-[var(--color-gold)] transition bg-white"
                   required
                 >
                   <option value="">اختر القارب</option>
@@ -322,7 +310,7 @@ export default function Booking() {
                 </select>
               </div>
 
-              {/* Number of People - Arabic */}
+              {/* Number of People */}
               <div>
                 <label className="block text-sm font-medium text-grey mb-1">
                   عدد الأشخاص *
@@ -337,7 +325,7 @@ export default function Booking() {
                   placeholder={`الحد الأقصى: ${
                     selectedBoat?.capacity || "-"
                   } أشخاص`}
-                  className="w-full border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-[var(--color-gold)] transition"
+                  className="w-full border rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base outline-none focus:ring-2 focus:ring-[var(--color-gold)] transition"
                   required
                 />
                 {selectedBoat && (
@@ -347,7 +335,7 @@ export default function Booking() {
                 )}
               </div>
 
-              {/* Date - Arabic */}
+              {/* Date */}
               <div>
                 <label className="block text-sm font-medium text-grey mb-1">
                   تاريخ الرحلة *
@@ -357,12 +345,12 @@ export default function Booking() {
                   value={selectedDate}
                   onChange={(e) => setSelectedDate(e.target.value)}
                   min={today}
-                  className="w-full border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-[var(--color-gold)] transition"
+                  className="w-full border rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base outline-none focus:ring-2 focus:ring-[var(--color-gold)] transition"
                   required
                 />
               </div>
 
-              {/* Duration - Arabic */}
+              {/* Duration */}
               <div>
                 <label className="block text-sm font-medium text-grey mb-1">
                   مدة الرحلة *
@@ -370,7 +358,7 @@ export default function Booking() {
                 <select
                   value={duration}
                   onChange={(e) => setDuration(Number(e.target.value))}
-                  className="w-full border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-[var(--color-gold)] transition bg-white"
+                  className="w-full border rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base outline-none focus:ring-2 focus:ring-[var(--color-gold)] transition bg-white"
                   required
                 >
                   <option value={1}>ساعة واحدة</option>
@@ -380,7 +368,7 @@ export default function Booking() {
                 </select>
               </div>
 
-              {/* Time Slots with visual indicators - Arabic labels */}
+              {/* Time Slots */}
               <div>
                 <label className="block text-sm font-medium text-grey mb-1">
                   وقت الرحلة *
@@ -396,8 +384,7 @@ export default function Booking() {
                   </p>
                 ) : (
                   <>
-                    {/* Time slots grid */}
-                    <div className="grid grid-cols-4 gap-2 mb-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2 mb-3">
                       {ALL_TIME_SLOTS.map((slot) => {
                         const status = getSlotStatus(slot);
                         const isSelected = selectedTimeSlot === slot;
@@ -413,7 +400,7 @@ export default function Booking() {
                               }
                             }}
                             className={`
-                              py-2 px-1 rounded-lg text-sm font-medium transition-all
+                              py-1.5 sm:py-2 px-1 rounded-lg text-xs sm:text-sm font-medium transition-all
                               ${
                                 status === "taken"
                                   ? "bg-red-100 text-red-400 cursor-not-allowed line-through"
@@ -425,45 +412,43 @@ export default function Booking() {
                               }
                             `}
                           >
-                            {getSlotLabel(slot)}
+                            {slot}
                           </button>
                         );
                       })}
                     </div>
 
-                    {/* Legend - Arabic */}
-                    <div className="flex flex-wrap gap-4 text-xs mb-3">
+                    {/* Legend */}
+                    <div className="flex flex-wrap gap-2 sm:gap-4 text-[10px] sm:text-xs mb-3">
                       <div className="flex items-center gap-1">
-                        <div className="w-3 h-3 bg-green-100 rounded"></div>
+                        <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-100 rounded"></div>
                         <span className="text-grey">
                           متاح لـ {duration} ساعة
                         </span>
                       </div>
                       <div className="flex items-center gap-1">
-                        <div className="w-3 h-3 bg-yellow-200 rounded"></div>
+                        <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-yellow-50 rounded"></div>
                         <span className="text-grey">متاح لمدة أخرى</span>
                       </div>
                       <div className="flex items-center gap-1">
-                        <div className="w-3 h-3 bg-red-100 rounded"></div>
+                        <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-red-100 rounded"></div>
                         <span className="text-grey">محجوز</span>
                       </div>
                     </div>
                   </>
                 )}
 
-                {/* No available slots message - Arabic */}
                 {selectedDate &&
                   selectedBoatId &&
                   !ordersLoading &&
                   validSlotsForDuration.length === 0 && (
                     <p className="text-red-500 text-xs mt-1">
                       لا توجد مواعيد متاحة لـ {duration} ساعة في هذا التاريخ.
-                      جرب مدة أخرى أو تاريخ آخر.
                     </p>
                   )}
               </div>
 
-              {/* Special Requests - Arabic */}
+              {/* Special Requests */}
               <div>
                 <label className="block text-sm font-medium text-grey mb-1">
                   ملاحظات (اختياري)
@@ -474,18 +459,18 @@ export default function Booking() {
                   onChange={handleInputChange}
                   rows="3"
                   placeholder="أي طلبات خاصة أو ملاحظات..."
-                  className="w-full border rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-[var(--color-gold)] transition resize-none"
+                  className="w-full border rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base outline-none focus:ring-2 focus:ring-[var(--color-gold)] transition resize-none"
                 />
               </div>
 
-              {/* Price Display - Arabic */}
+              {/* Price Display */}
               {selectedBoat && calculatedPrice > 0 && (
-                <div className="bg-white p-4 rounded-lg border border-gray-200">
+                <div className="bg-white p-3 sm:p-4 rounded-lg border border-gray-200">
                   <div className="flex justify-between items-center">
-                    <span className="font-bold text-[var(--color-black)]">
+                    <span className="font-bold text-[var(--color-black)] text-sm sm:text-base">
                       السعر الإجمالي:
                     </span>
-                    <span className="text-xl font-bold text-[var(--color-blue)]">
+                    <span className="text-lg sm:text-xl font-bold text-[var(--color-blue)]">
                       {calculatedPrice.toLocaleString()} دج
                     </span>
                   </div>
@@ -495,11 +480,11 @@ export default function Booking() {
                 </div>
               )}
 
-              {/* Submit - Arabic */}
+              {/* Submit */}
               <button
                 type="submit"
                 disabled={isSubmitting || boatsLoading}
-                className="bg-[var(--color-gold)] text-[var(--color-black)] py-3 rounded-lg font-semibold hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+                className="bg-[var(--color-gold)] text-[var(--color-black)] py-2.5 sm:py-3 rounded-lg font-semibold hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed mt-2 text-sm sm:text-base"
               >
                 {isSubmitting ? "جاري إرسال الطلب..." : "تأكيد الحجز"}
               </button>
@@ -510,7 +495,7 @@ export default function Booking() {
           <div className="flex flex-col justify-center items-center text-center">
             {selectedBoat ? (
               <>
-                <div className="w-full max-w-md h-[300px] rounded-2xl overflow-hidden shadow-lg">
+                <div className="w-full max-w-md h-[250px] sm:h-[300px] rounded-2xl overflow-hidden shadow-lg">
                   <img
                     src={selectedBoat.image}
                     alt={selectedBoat.title}
@@ -518,38 +503,26 @@ export default function Booking() {
                   />
                 </div>
 
-                {/* Boat title in French */}
                 <h3
-                  className="mt-5 text-2xl font-bold text-[var(--color-black)]"
+                  className="mt-4 sm:mt-5 text-xl sm:text-2xl font-bold text-[var(--color-black)]"
                   dir="ltr"
                 >
                   {selectedBoat.title}
                 </h3>
 
-                {/* Place in Arabic */}
-                <p className="text-[var(--color-grey)] mt-1 flex items-center gap-1">
+                <p className="text-[var(--color-grey)] mt-1 flex items-center gap-1 text-sm sm:text-base">
                   📍 {getPlaceArabic(selectedBoat.place)}
                 </p>
 
-                {/* Capacity in Arabic */}
-                <p className="text-[var(--color-grey)] mt-2">
+                <p className="text-[var(--color-grey)] mt-1 sm:mt-2 text-sm sm:text-base">
                   👥 السعة: {selectedBoat.capacity} أشخاص
                 </p>
 
-                {/* Description in French */}
-                <p
-                  className="text-[var(--color-grey)] mt-1 text-sm line-clamp-3 max-w-md"
-                  dir="ltr"
-                >
-                  {selectedBoat.description}
-                </p>
-
-                {/* Price Info - French labels, Arabic title */}
-                <div className="mt-4 p-4 bg-gray-50 rounded-xl w-full max-w-md">
-                  <h4 className="font-bold text-[var(--color-black)] mb-2">
+                <div className="mt-3 sm:mt-4 p-3 sm:p-4 bg-gray-50 rounded-xl w-full max-w-md">
+                  <h4 className="font-bold text-[var(--color-black)] mb-2 text-sm sm:text-base">
                     الأسعار:
                   </h4>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div className="grid grid-cols-2 gap-1.5 sm:gap-2 text-xs sm:text-sm">
                     <span>1h: {selectedBoat.price1h?.toLocaleString()} دج</span>
                     <span>2h: {selectedBoat.price2h?.toLocaleString()} دج</span>
                     <span>3h: {selectedBoat.price3h?.toLocaleString()} دج</span>
@@ -558,8 +531,10 @@ export default function Booking() {
                 </div>
               </>
             ) : (
-              <div className="text-center text-grey">
-                <p>اختر قارباً لعرض التفاصيل</p>
+              <div className="text-center text-grey py-8 sm:py-12">
+                <p className="text-sm sm:text-base">
+                  اختر قارباً لعرض التفاصيل
+                </p>
               </div>
             )}
           </div>

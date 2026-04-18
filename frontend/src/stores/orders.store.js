@@ -301,9 +301,28 @@ const useOrdersStore = create((set, get) => ({
     }
   },
 
-  // Update order status (admin)
+  // Update order status (admin) - OPTIMISTIC UPDATE
   updateOrderStatus: async (id, status, adminNotes = "") => {
-    set({ loading: true, error: null });
+    // FIX: Store previous state for rollback
+    const previousOrders = get().orders;
+    const previousSelectedOrder = get().selectedOrder;
+
+    // FIX: Optimistically update local state immediately
+    set((state) => ({
+      orders: state.orders.map((order) =>
+        order._id === id
+          ? { ...order, status, adminNotes: adminNotes || order.adminNotes }
+          : order
+      ),
+      selectedOrder:
+        state.selectedOrder?._id === id
+          ? {
+              ...state.selectedOrder,
+              status,
+              adminNotes: adminNotes || state.selectedOrder.adminNotes,
+            }
+          : state.selectedOrder,
+    }));
 
     try {
       const response = await api.put(`/orders/${id}/status`, {
@@ -311,7 +330,7 @@ const useOrdersStore = create((set, get) => ({
         adminNotes,
       });
 
-      // Update orders list
+      // FIX: Update with server data (ensures consistency)
       set((state) => ({
         orders: state.orders.map((order) =>
           order._id === id ? response.data.order : order
@@ -320,13 +339,12 @@ const useOrdersStore = create((set, get) => ({
           state.selectedOrder?._id === id
             ? response.data.order
             : state.selectedOrder,
-        loading: false,
       }));
 
-      // Refresh stats after status change
+      // FIX: Only refetch stats (lightweight), not orders
       get().fetchStats();
 
-      // FIX: If order was cancelled, refetch available slots
+      // FIX: If order was cancelled, refetch available slots for current context
       if (status === "cancelled") {
         const { currentContext } = get();
         if (currentContext.boatId && currentContext.date) {
@@ -345,45 +363,48 @@ const useOrdersStore = create((set, get) => ({
     } catch (error) {
       console.error("Update order status error:", error);
 
+      // FIX: Rollback on error
+      set({
+        orders: previousOrders,
+        selectedOrder: previousSelectedOrder,
+      });
+
       let errorMessage =
         error.response?.data?.message || "فشل في تحديث حالة الحجز";
 
-      set({ loading: false, error: errorMessage });
       toast.error(errorMessage);
       return { success: false, error: errorMessage };
     }
   },
 
-  // Delete order (admin only)
+  // Delete order (admin only) - OPTIMISTIC UPDATE
   deleteOrder: async (id) => {
-    set({ loading: true, error: null });
+    // FIX: Store previous state for rollback
+    const previousOrders = get().orders;
+    const previousSelectedOrder = get().selectedOrder;
+    const orderToDelete = get().orders.find((o) => o._id === id);
+
+    // FIX: Optimistically remove from local state immediately
+    set((state) => ({
+      orders: state.orders.filter((order) => order._id !== id),
+      selectedOrder:
+        state.selectedOrder?._id === id ? null : state.selectedOrder,
+    }));
 
     try {
-      // Get order details before deletion to know boatId and date
-      const order = get().orders.find((o) => o._id === id);
-
       await api.delete(`/orders/${id}`);
 
-      // Remove from orders list
-      set((state) => ({
-        orders: state.orders.filter((order) => order._id !== id),
-        selectedOrder:
-          state.selectedOrder?._id === id ? null : state.selectedOrder,
-        loading: false,
-      }));
-
-      // Refresh stats after deletion
+      // FIX: Only refetch stats (lightweight), not orders
       get().fetchStats();
 
       // FIX: Refetch available slots if we have context and it matches
       const { currentContext } = get();
       if (
-        order &&
-        currentContext.boatId === order.boatId &&
+        orderToDelete &&
+        currentContext.boatId === orderToDelete.boatId &&
         currentContext.date
       ) {
-        // Convert date to YYYY-MM-DD if needed
-        const orderDate = new Date(order.bookingDate)
+        const orderDate = new Date(orderToDelete.bookingDate)
           .toISOString()
           .split("T")[0];
         if (orderDate === currentContext.date) {
@@ -398,33 +419,39 @@ const useOrdersStore = create((set, get) => ({
       return { success: true };
     } catch (error) {
       console.error("Delete order error:", error);
-      const errorMessage = error.response?.data?.message || "فشل في حذف الحجز";
 
-      set({ loading: false, error: errorMessage });
+      // FIX: Rollback on error
+      set({
+        orders: previousOrders,
+        selectedOrder: previousSelectedOrder,
+      });
+
+      const errorMessage = error.response?.data?.message || "فشل في حذف الحجز";
       toast.error(errorMessage);
       return { success: false, error: errorMessage };
     }
   },
 
-  // Bulk delete orders
+  // Bulk delete orders - SINGLE API CALL
   bulkDeleteOrders: async (ids) => {
-    set({ loading: true, error: null });
+    // FIX: Store previous state for rollback
+    const previousOrders = get().orders;
+
+    // FIX: Optimistically remove from local state immediately
+    set((state) => ({
+      orders: state.orders.filter((order) => !ids.includes(order._id)),
+    }));
 
     try {
-      // Delete sequentially
-      for (const id of ids) {
-        await api.delete(`/orders/${id}`);
-      }
+      // FIX: Single API call instead of loop
+      const response = await api.delete("/orders/bulk", {
+        data: { ids }, // Send IDs in request body
+      });
 
-      // Remove from orders list
-      set((state) => ({
-        orders: state.orders.filter((order) => !ids.includes(order._id)),
-        loading: false,
-      }));
-
+      // FIX: Only refetch stats
       get().fetchStats();
 
-      // FIX: Refetch available slots
+      // FIX: Refetch available slots if needed
       const { currentContext } = get();
       if (currentContext.boatId && currentContext.date) {
         await get().getAvailableSlots(
@@ -433,14 +460,16 @@ const useOrdersStore = create((set, get) => ({
         );
       }
 
-      toast.success(`تم حذف ${ids.length} حجز بنجاح`);
-      return { success: true };
+      toast.success(response.data.message || `تم حذف ${ids.length} حجز بنجاح`);
+      return { success: true, deletedCount: response.data.deletedCount };
     } catch (error) {
       console.error("Bulk delete error:", error);
+
+      // FIX: Rollback on error
+      set({ orders: previousOrders });
+
       const errorMessage =
         error.response?.data?.message || "فشل في حذف الحجوزات";
-
-      set({ loading: false, error: errorMessage });
       toast.error(errorMessage);
       return { success: false, error: errorMessage };
     }

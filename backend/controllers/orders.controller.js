@@ -103,17 +103,17 @@ export const createOrder = async (req, res) => {
       specialRequests,
     } = req.body;
 
-    console.log("📥 Received order data:", {
-      boatId,
-      customerName,
-      customerPhone,
-      customerEmail,
-      bookingDate,
-      startTime,
-      duration,
-      numberOfPeople,
-      specialRequests,
-    });
+    // console.log("📥 Received order data:", {
+    //   boatId,
+    //   customerName,
+    //   customerPhone,
+    //   customerEmail,
+    //   bookingDate,
+    //   startTime,
+    //   duration,
+    //   numberOfPeople,
+    //   specialRequests,
+    // });
 
     // Validation
     if (
@@ -150,11 +150,11 @@ export const createOrder = async (req, res) => {
     // Check if boat exists
     const boat = await Boat.findById(boatId);
     if (!boat) {
-      console.log("❌ Boat not found:", boatId);
+      // console.log("❌ Boat not found:", boatId);
       return res.status(404).json({ message: "القارب غير موجود" });
     }
 
-    console.log("✅ Boat found:", boat.title);
+    // console.log("✅ Boat found:", boat.title);
 
     // Validate booking date (not in past)
     const today = new Date();
@@ -182,19 +182,19 @@ export const createOrder = async (req, res) => {
     );
 
     if (!isAvailable) {
-      console.log("❌ Slot not available");
+      // console.log("❌ Slot not available");
       return res
         .status(400)
         .json({ message: "الوقت المحدد غير متاح، يرجى اختيار وقت آخر" });
     }
 
-    console.log("✅ Slot is available");
+    // console.log("✅ Slot is available");
 
     // Calculate endTime and totalPrice
     const endTime = calculateEndTime(startTime, Number(duration));
     const totalPrice = calculateTotalPrice(boat, Number(duration));
 
-    console.log("💰 Calculated:", { startTime, duration, endTime, totalPrice });
+    // console.log("💰 Calculated:", { startTime, duration, endTime, totalPrice });
 
     // Check if boat prices are complete
     if (!boat.price1h || !boat.price2h || !boat.price3h || !boat.price4h) {
@@ -233,7 +233,7 @@ export const createOrder = async (req, res) => {
 
     console.log("📝 Saving order to database...");
     await order.save();
-    console.log("✅ Order saved successfully:", order._id);
+    // console.log("✅ Order saved successfully:", order._id);
 
     // FIX: Send email notifications (non-blocking)
     sendBookingNotifications(order).catch((err) => {
@@ -656,5 +656,38 @@ export const getOrderStats = async (req, res) => {
   } catch (error) {
     console.error("Get order stats error:", error);
     res.status(500).json({ message: "فشل في جلب الإحصائيات" });
+  }
+};
+
+// Bulk delete orders (admin only)
+export const bulkDeleteOrders = async (req, res) => {
+  try {
+    const { ids } = req.body;
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ message: "معرفات الحجوزات مطلوبة" });
+    }
+
+    // Validate all IDs
+    const validIds = ids.filter((id) => mongoose.Types.ObjectId.isValid(id));
+    if (validIds.length === 0) {
+      return res.status(400).json({ message: "معرفات الحجوزات غير صالحة" });
+    }
+
+    // Delete all orders in one operation
+    const result = await Order.deleteMany({ _id: { $in: validIds } });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: "لم يتم العثور على الحجوزات" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `تم حذف ${result.deletedCount} حجز بنجاح`,
+      deletedCount: result.deletedCount,
+    });
+  } catch (error) {
+    console.error("Bulk delete orders error:", error);
+    res.status(500).json({ message: "فشل في حذف الحجوزات" });
   }
 };
