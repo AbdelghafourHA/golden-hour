@@ -124,7 +124,7 @@ const useOrdersStore = create((set, get) => ({
       }
 
       set({ loading: false });
-      toast.success("تم إنشاء الحجز بنجاح، في انتظار التأكيد");
+      // toast.success("تم إنشاء الحجز بنجاح، في انتظار التأكيد");
 
       return {
         success: true,
