@@ -105,7 +105,7 @@ export default function Nav() {
                       setActive(link.name);
                       setOpen(false);
                     }}
-                    className={`block w-full text-right transition duration-200 ${
+                    className={`block w-full transition duration-200 ${
                       active === link.name ? "text-gold" : ""
                     }`}
                   >
