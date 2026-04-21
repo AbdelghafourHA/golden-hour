@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useEffect, useMemo } from "react";
 import logo from "../assets/logo01.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -15,13 +16,24 @@ import {
   faMapPin,
   faExternalLinkAlt,
 } from "@fortawesome/free-solid-svg-icons";
+import useBoatsStore from "../stores/boats.store";
 
 export default function Contact() {
-  const locations = [
-    { name: "ميناء تيبازة", icon: faShip },
-    { name: "ميناء شرشال", icon: faShip },
-    { name: "القرن الذهبي", icon: faMapPin },
-  ];
+  const { boats, fetchBoats } = useBoatsStore();
+
+  // Fetch boats on mount
+  useEffect(() => {
+    fetchBoats();
+  }, [fetchBoats]);
+
+  // FIX: Extract unique places from boats
+  const locations = useMemo(() => {
+    const uniquePlaces = [...new Set(boats.map((boat) => boat.place))];
+    return uniquePlaces.map((place) => ({
+      name: place,
+      icon: place.includes("ميناء") ? faShip : faMapPin,
+    }));
+  }, [boats]);
 
   return (
     <motion.section
@@ -57,7 +69,7 @@ export default function Contact() {
               </p>
             </div>
 
-            {/* Location Cards */}
+            {/* Location Cards - FIX: Dynamic from boats */}
             <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg border border-gray-100">
               <h3 className="text-lg sm:text-xl font-bold text-[var(--color-blue)] mb-3 sm:mb-4 flex items-center gap-2">
                 <span>مواقعنا</span>
@@ -68,18 +80,24 @@ export default function Contact() {
               </h3>
 
               <div className="space-y-2 sm:space-y-3">
-                {locations.map((loc, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-3 text-[var(--color-grey)] hover:text-[var(--color-black)] transition-colors text-sm sm:text-base"
-                  >
-                    <FontAwesomeIcon
-                      icon={loc.icon}
-                      className="text-[var(--color-gold)] w-4 sm:w-5"
-                    />
-                    <span className="font-medium">{loc.name}</span>
+                {locations.length > 0 ? (
+                  locations.map((loc, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-3 text-[var(--color-grey)] hover:text-[var(--color-black)] transition-colors text-sm sm:text-base"
+                    >
+                      <FontAwesomeIcon
+                        icon={loc.icon}
+                        className="text-[var(--color-gold)] w-4 sm:w-5"
+                      />
+                      <span className="font-medium">{loc.name}</span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-[var(--color-grey)] text-sm">
+                    جاري تحميل المواقع...
                   </div>
-                ))}
+                )}
               </div>
 
               <div className="mt-4 pt-4 border-t border-gray-200">
@@ -125,12 +143,12 @@ export default function Contact() {
                   icon={faPhone}
                   className="text-[var(--color-gold)] text-base sm:text-lg w-5 sm:w-6"
                 />
-                {/* <a
+                <a
                   href="tel:+213661348707"
                   className="text-[var(--color-grey)] hover:text-[var(--color-blue)] transition-colors text-sm sm:text-base"
                 >
                   0661348707
-                </a> */}
+                </a>
               </div>
             </div>
 
