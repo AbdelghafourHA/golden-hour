@@ -1,13 +1,25 @@
 import { motion } from "framer-motion";
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import useBoatsStore from "../stores/boats.store";
 
 export default function Boats() {
+  const { t } = useTranslation();
   const { boats, loading, fetchBoats } = useBoatsStore();
 
   useEffect(() => {
     fetchBoats();
   }, [fetchBoats]);
+
+  // Helper to get Arabic place name
+  const getPlaceArabic = (place) => {
+    const placeMap = {
+      "ميناء تيبازة": "ميناء تيبازة",
+      "ميناء شرشال": "ميناء شرشال",
+      "القرن الذهبي": "القرن الذهبي",
+    };
+    return placeMap[place] || place;
+  };
 
   // Loading skeleton
   if (loading && boats.length === 0) {
@@ -16,10 +28,10 @@ export default function Boats() {
         <div className="container px-4 sm:px-6">
           <div className="text-center mb-8 sm:mb-12 md:mb-14">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--color-black)]">
-              القوارب المتوفرة
+              {t("boats.title")}
             </h2>
             <p className="text-[var(--color-grey)] mt-2 sm:mt-3 text-sm sm:text-base">
-              اختر التجربة التي تناسبك واستمتع برحلة بحرية فريدة
+              {t("boats.subtitle")}
             </p>
           </div>
 
@@ -54,10 +66,10 @@ export default function Boats() {
         <div className="container px-4 sm:px-6">
           <div className="text-center mb-8 sm:mb-12 md:mb-14">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--color-black)]">
-              القوارب المتوفرة
+              {t("boats.title")}
             </h2>
             <p className="text-[var(--color-grey)] mt-2 sm:mt-3 text-sm sm:text-base">
-              لا توجد قوارب متاحة حالياً
+              {t("boats.noBoats")}
             </p>
           </div>
         </div>
@@ -79,10 +91,10 @@ export default function Boats() {
         {/* Title */}
         <div className="text-center mb-8 sm:mb-12 md:mb-14">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--color-black)]">
-            القوارب المتوفرة
+            {t("boats.title")}
           </h2>
           <p className="text-[var(--color-grey)] mt-2 sm:mt-3 text-sm sm:text-base">
-            اختر التجربة التي تناسبك واستمتع برحلة بحرية فريدة
+            {t("boats.subtitle")}
           </p>
         </div>
 
@@ -129,7 +141,9 @@ export default function Boats() {
                 <div className="mt-2 sm:mt-3 text-xs sm:text-sm text-gray-300 font-medium flex justify-between items-center">
                   <span className="flex items-center gap-1">
                     <span>📍</span>
-                    {boat.place}
+                    {t("boats.place", {
+                      defaultValue: getPlaceArabic(boat.place),
+                    })}
                   </span>
                   <span dir="ltr">{boat.price1h?.toLocaleString()} DA/H</span>
                 </div>

@@ -4,7 +4,20 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gold Houre</title>
+    <title>Golden Hour</title>
+
+    <!-- FIX: Dynamic language and direction -->
+    <script>
+      (function () {
+        // Check localStorage first, fallback to Arabic
+        const savedLang = localStorage.getItem("i18nextLng");
+        const lang = savedLang || "ar";
+        const dir = lang === "ar" ? "rtl" : "ltr";
+
+        document.documentElement.lang = lang;
+        document.documentElement.dir = dir;
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

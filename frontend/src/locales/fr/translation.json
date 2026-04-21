@@ -1,0 +1,75 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "boats": "Bateaux",
+    "booking": "Réserver",
+    "contact": "Contact"
+  },
+
+  "home": {
+    "title": "Croisières <br/> et expériences inoubliables",
+    "subtitle": "Réservez votre voyage facilement et profitez des meilleurs moments en mer avec les meilleurs bateaux.",
+    "cta": "Réservez maintenant",
+    "location": "Emplacement",
+    "locationName": "Tipaza",
+    "workHours": "Heures de travail",
+    "hours": "09:00 - 20:00"
+  },
+
+  "boats": {
+    "title": "Bateaux disponibles",
+    "subtitle": "Choisissez l'expérience qui vous convient et profitez d'une croisière unique",
+    "noBoats": "Aucun bateau disponible",
+    "loading": "Chargement des bateaux..."
+  },
+  "booking": {
+    "title": "Réservez votre croisière",
+    "subtitle": "Choisissez le bateau et l'horaire qui vous convient",
+    "fullName": "Nom complet",
+    "phone": "Téléphone",
+    "email": "Email (Optionnel)",
+    "selectBoat": "Choisir le bateau",
+    "people": "Nombre de personnes",
+    "maxCapacity": "Capacité maximale",
+    "date": "Date de la croisière",
+    "duration": "Durée",
+    "oneHour": "1 heure",
+    "twoHours": "2 heures",
+    "threeHours": "3 heures",
+    "fourHours": "4 heures",
+    "time": "Heure de départ",
+    "selectDate": "Sélectionnez d'abord une date",
+    "selectBoatFirst": "Sélectionnez d'abord un bateau",
+    "loadingSlots": "Chargement des horaires...",
+    "noSlots": "Aucun créneau disponible",
+    "available": "Disponible",
+    "taken": "Réservé",
+    "otherDuration": "Disponible autre durée",
+    "notes": "Remarques (Optionnel)",
+    "totalPrice": "Prix total",
+    "confirm": "Confirmer la réservation",
+    "sending": "Envoi en cours...",
+    "success": "Réservation envoyée avec succès! Nous vous contacterons pour confirmation.",
+    "selectBoatMessage": "Sélectionnez un bateau pour voir les détails"
+  },
+  "contact": {
+    "title": "Contactez-nous",
+    "subtitle": "Nous sommes là pour répondre à toutes vos questions et vous aider à réserver votre croisière",
+    "ourLocations": "Nos emplacements",
+    "loadingLocations": "Chargement des emplacements...",
+    "adminOffice": "Bureau administratif",
+    "adminOfficeAddress": "AADL 1700 El Hadika",
+    "region": "Wilaya de Tipaza, Algérie",
+    "hours": "Tous les jours: 09:00 - 20:00",
+    "mapTitle": "Notre emplacement à Tipaza",
+    "mapHint": "Cliquez sur la carte pour naviguer ou utilisez le bouton pour obtenir l'itinéraire",
+    "openInMaps": "Ouvrir dans Google Maps"
+  },
+  "marquee": {
+    "comfortableExperience": "Expérience confortable",
+    "waterActivities": "Activités nautiques",
+    "familyFriendly": "Adapté aux familles",
+    "restRelaxation": "Détente et relaxation",
+    "modernShips": "Bateaux modernes"
+  }
+}

@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useState, useEffect, useMemo } from "react";
 import { toast } from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 import useBoatsStore from "../stores/boats.store";
 import useOrdersStore from "../stores/orders.store";
 
@@ -16,6 +17,7 @@ const ALL_TIME_SLOTS = [
 ];
 
 export default function Booking() {
+  const { t } = useTranslation();
   const { boats, loading: boatsLoading, fetchBoats } = useBoatsStore();
   const {
     availableSlots,
@@ -114,31 +116,33 @@ export default function Booking() {
     e.preventDefault();
 
     if (!selectedBoatId) {
-      toast.error("يرجى اختيار القارب");
+      toast.error(t("booking.errors.selectBoat"));
       return;
     }
     if (!selectedDate) {
-      toast.error("يرجى اختيار التاريخ");
+      toast.error(t("booking.errors.selectDate"));
       return;
     }
     if (!selectedTimeSlot) {
-      toast.error("يرجى اختيار الوقت");
+      toast.error(t("booking.errors.selectTime"));
       return;
     }
     if (!formData.customerName.trim()) {
-      toast.error("يرجى إدخال الاسم الكامل");
+      toast.error(t("booking.errors.enterName"));
       return;
     }
     if (!formData.customerPhone.trim()) {
-      toast.error("يرجى إدخال رقم الهاتف");
+      toast.error(t("booking.errors.enterPhone"));
       return;
     }
     if (!formData.numberOfPeople || formData.numberOfPeople < 1) {
-      toast.error("يرجى إدخال عدد الأشخاص");
+      toast.error(t("booking.errors.enterPeople"));
       return;
     }
     if (formData.numberOfPeople > selectedBoat?.capacity) {
-      toast.error(`السعة القصوى للقارب هي ${selectedBoat.capacity} أشخاص`);
+      toast.error(
+        t("booking.errors.maxCapacity", { capacity: selectedBoat.capacity })
+      );
       return;
     }
 
@@ -148,7 +152,7 @@ export default function Booking() {
       !selectedBoat?.price3h ||
       !selectedBoat?.price4h
     ) {
-      toast.error("بيانات أسعار القارب غير مكتملة. يرجى التواصل مع الإدارة.");
+      toast.error(t("booking.errors.incompletePrice"));
       return;
     }
 
@@ -180,18 +184,16 @@ export default function Booking() {
       setSelectedDate("");
       setSelectedTimeSlot("");
       setDuration(1);
-      // toast.success("تم إرسال طلب الحجز بنجاح! سنتواصل معك قريباً للتأكيد.");
+      toast.success(t("booking.success"));
     }
   };
 
   const getDurationLabel = (dur) => {
-    const labels = {
-      1: "ساعة واحدة",
-      2: "ساعتين",
-      3: "3 ساعات",
-      4: "4 ساعات",
-    };
-    return labels[dur] || `${dur} ساعات`;
+    if (dur === 1) return t("booking.oneHour");
+    if (dur === 2) return t("booking.twoHours");
+    if (dur === 3) return t("booking.threeHours");
+    if (dur === 4) return t("booking.fourHours");
+    return `${dur} ${t("booking.hours")}`;
   };
 
   const getPlaceArabic = (place) => {
@@ -224,16 +226,16 @@ export default function Booking() {
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
       className="py-12 sm:py-16 md:py-20 bg-white"
-      dir="rtl"
+      // dir="rtl"
     >
       <div className="container px-4 sm:px-6">
         {/* Title */}
         <div className="text-center mb-8 sm:mb-12 md:mb-14">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--color-black)]">
-            احجز رحلتك الآن
+            {t("booking.title")}
           </h2>
           <p className="text-[var(--color-grey)] mt-2 sm:mt-3 text-sm sm:text-base">
-            اختر القارب والوقت المناسب وسنؤكد حجزك مباشرة
+            {t("booking.subtitle")}
           </p>
         </div>
 
@@ -244,14 +246,14 @@ export default function Booking() {
               {/* Name */}
               <div>
                 <label className="block text-sm font-medium text-grey mb-1">
-                  الاسم الكامل *
+                  {t("booking.fullName")} *
                 </label>
                 <input
                   type="text"
                   name="customerName"
                   value={formData.customerName}
                   onChange={handleInputChange}
-                  placeholder="أدخل اسمك الكامل"
+                  placeholder={t("booking.fullNamePlaceholder")}
                   className="w-full border rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base outline-none focus:ring-2 focus:ring-[var(--color-gold)] transition"
                   required
                 />
@@ -260,14 +262,14 @@ export default function Booking() {
               {/* Phone */}
               <div>
                 <label className="block text-sm font-medium text-grey mb-1">
-                  رقم الهاتف *
+                  {t("booking.phone")} *
                 </label>
                 <input
                   type="tel"
                   name="customerPhone"
                   value={formData.customerPhone}
                   onChange={handleInputChange}
-                  placeholder="مثال: 0550123456"
+                  placeholder={t("booking.phonePlaceholder")}
                   className="w-full border rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base outline-none focus:ring-2 focus:ring-[var(--color-gold)] transition"
                   dir="ltr"
                   required
@@ -277,14 +279,14 @@ export default function Booking() {
               {/* Email */}
               <div>
                 <label className="block text-sm font-medium text-grey mb-1">
-                  البريد الإلكتروني (اختياري)
+                  {t("booking.email")}
                 </label>
                 <input
                   type="email"
                   name="customerEmail"
                   value={formData.customerEmail}
                   onChange={handleInputChange}
-                  placeholder="example@email.com"
+                  placeholder={t("booking.emailPlaceholder")}
                   className="w-full border rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base outline-none focus:ring-2 focus:ring-[var(--color-gold)] transition"
                   dir="ltr"
                 />
@@ -293,7 +295,7 @@ export default function Booking() {
               {/* Boat Selection */}
               <div>
                 <label className="block text-sm font-medium text-grey mb-1">
-                  اختر القارب *
+                  {t("booking.selectBoat")} *
                 </label>
                 <select
                   value={selectedBoatId}
@@ -301,7 +303,7 @@ export default function Booking() {
                   className="w-full border rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base outline-none focus:ring-2 focus:ring-[var(--color-gold)] transition bg-white"
                   required
                 >
-                  <option value="">اختر القارب</option>
+                  <option value="">{t("booking.selectBoatPlaceholder")}</option>
                   {boats.map((boat) => (
                     <option key={boat._id} value={boat._id}>
                       {boat.title} - {getPlaceArabic(boat.place)}
@@ -313,7 +315,7 @@ export default function Booking() {
               {/* Number of People */}
               <div>
                 <label className="block text-sm font-medium text-grey mb-1">
-                  عدد الأشخاص *
+                  {t("booking.people")} *
                 </label>
                 <input
                   type="number"
@@ -322,15 +324,16 @@ export default function Booking() {
                   onChange={handleInputChange}
                   min="1"
                   max={selectedBoat?.capacity || 1}
-                  placeholder={`الحد الأقصى: ${
+                  placeholder={`${t("booking.maxCapacity")}: ${
                     selectedBoat?.capacity || "-"
-                  } أشخاص`}
+                  } ${t("booking.persons")}`}
                   className="w-full border rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base outline-none focus:ring-2 focus:ring-[var(--color-gold)] transition"
                   required
                 />
                 {selectedBoat && (
                   <p className="text-xs text-grey mt-1">
-                    السعة القصوى: {selectedBoat.capacity} أشخاص
+                    {t("booking.maxCapacity")}: {selectedBoat.capacity}{" "}
+                    {t("booking.persons")}
                   </p>
                 )}
               </div>
@@ -338,7 +341,7 @@ export default function Booking() {
               {/* Date */}
               <div>
                 <label className="block text-sm font-medium text-grey mb-1">
-                  تاريخ الرحلة *
+                  {t("booking.date")} *
                 </label>
                 <input
                   type="date"
@@ -353,7 +356,7 @@ export default function Booking() {
               {/* Duration */}
               <div>
                 <label className="block text-sm font-medium text-grey mb-1">
-                  مدة الرحلة *
+                  {t("booking.duration")} *
                 </label>
                 <select
                   value={duration}
@@ -361,26 +364,28 @@ export default function Booking() {
                   className="w-full border rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base outline-none focus:ring-2 focus:ring-[var(--color-gold)] transition bg-white"
                   required
                 >
-                  <option value={1}>ساعة واحدة</option>
-                  <option value={2}>ساعتين</option>
-                  <option value={3}>3 ساعات</option>
-                  <option value={4}>4 ساعات</option>
+                  <option value={1}>{t("booking.oneHour")}</option>
+                  <option value={2}>{t("booking.twoHours")}</option>
+                  <option value={3}>{t("booking.threeHours")}</option>
+                  <option value={4}>{t("booking.fourHours")}</option>
                 </select>
               </div>
 
               {/* Time Slots */}
               <div>
                 <label className="block text-sm font-medium text-grey mb-1">
-                  وقت الرحلة *
+                  {t("booking.time")} *
                 </label>
 
                 {!selectedDate || !selectedBoatId ? (
                   <p className="text-sm text-grey py-2">
-                    {!selectedDate ? "اختر التاريخ أولاً" : "اختر القارب أولاً"}
+                    {!selectedDate
+                      ? t("booking.selectDate")
+                      : t("booking.selectBoatFirst")}
                   </p>
                 ) : ordersLoading ? (
                   <p className="text-sm text-grey py-2">
-                    جاري تحميل المواعيد...
+                    {t("booking.loadingSlots")}
                   </p>
                 ) : (
                   <>
@@ -423,16 +428,19 @@ export default function Booking() {
                       <div className="flex items-center gap-1">
                         <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-green-100 rounded"></div>
                         <span className="text-grey">
-                          متاح لـ {duration} ساعة
+                          {t("booking.available")} {duration}{" "}
+                          {t("booking.hour")}
                         </span>
                       </div>
                       <div className="flex items-center gap-1">
                         <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-yellow-50 rounded"></div>
-                        <span className="text-grey">متاح لمدة أخرى</span>
+                        <span className="text-grey">
+                          {t("booking.otherDuration")}
+                        </span>
                       </div>
                       <div className="flex items-center gap-1">
                         <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-red-100 rounded"></div>
-                        <span className="text-grey">محجوز</span>
+                        <span className="text-grey">{t("booking.taken")}</span>
                       </div>
                     </div>
                   </>
@@ -443,7 +451,7 @@ export default function Booking() {
                   !ordersLoading &&
                   validSlotsForDuration.length === 0 && (
                     <p className="text-red-500 text-xs mt-1">
-                      لا توجد مواعيد متاحة لـ {duration} ساعة في هذا التاريخ.
+                      {t("booking.noSlotsAvailable", { duration })}
                     </p>
                   )}
               </div>
@@ -451,14 +459,14 @@ export default function Booking() {
               {/* Special Requests */}
               <div>
                 <label className="block text-sm font-medium text-grey mb-1">
-                  ملاحظات (اختياري)
+                  {t("booking.notes")}
                 </label>
                 <textarea
                   name="specialRequests"
                   value={formData.specialRequests}
                   onChange={handleInputChange}
                   rows="3"
-                  placeholder="أي طلبات خاصة أو ملاحظات..."
+                  placeholder={t("booking.notesPlaceholder")}
                   className="w-full border rounded-lg px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base outline-none focus:ring-2 focus:ring-[var(--color-gold)] transition resize-none"
                 />
               </div>
@@ -468,10 +476,10 @@ export default function Booking() {
                 <div className="bg-white p-3 sm:p-4 rounded-lg border border-gray-200">
                   <div className="flex justify-between items-center">
                     <span className="font-bold text-[var(--color-black)] text-sm sm:text-base">
-                      السعر الإجمالي:
+                      {t("booking.totalPrice")}:
                     </span>
                     <span className="text-lg sm:text-xl font-bold text-[var(--color-blue)]">
-                      {calculatedPrice.toLocaleString()} دج
+                      {calculatedPrice.toLocaleString()} {t("booking.da")}
                     </span>
                   </div>
                   <p className="text-xs text-grey mt-1">
@@ -486,7 +494,7 @@ export default function Booking() {
                 disabled={isSubmitting || boatsLoading}
                 className="bg-[var(--color-gold)] text-[var(--color-black)] py-2.5 sm:py-3 rounded-lg font-semibold hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed mt-2 text-sm sm:text-base"
               >
-                {isSubmitting ? "جاري إرسال الطلب..." : "تأكيد الحجز"}
+                {isSubmitting ? t("booking.sending") : t("booking.confirm")}
               </button>
             </form>
           </div>
@@ -515,25 +523,38 @@ export default function Booking() {
                 </p>
 
                 <p className="text-[var(--color-grey)] mt-1 sm:mt-2 text-sm sm:text-base">
-                  👥 السعة: {selectedBoat.capacity} أشخاص
+                  👥 {t("booking.capacity")}: {selectedBoat.capacity}{" "}
+                  {t("booking.persons")}
                 </p>
 
                 <div className="mt-3 sm:mt-4 p-3 sm:p-4 bg-gray-50 rounded-xl w-full max-w-md">
                   <h4 className="font-bold text-[var(--color-black)] mb-2 text-sm sm:text-base">
-                    الأسعار:
+                    {t("booking.prices")}:
                   </h4>
                   <div className="grid grid-cols-2 gap-1.5 sm:gap-2 text-xs sm:text-sm">
-                    <span>1h: {selectedBoat.price1h?.toLocaleString()} دج</span>
-                    <span>2h: {selectedBoat.price2h?.toLocaleString()} دج</span>
-                    <span>3h: {selectedBoat.price3h?.toLocaleString()} دج</span>
-                    <span>4h: {selectedBoat.price4h?.toLocaleString()} دج</span>
+                    <span>
+                      1h: {selectedBoat.price1h?.toLocaleString()}{" "}
+                      {t("booking.da")}
+                    </span>
+                    <span>
+                      2h: {selectedBoat.price2h?.toLocaleString()}{" "}
+                      {t("booking.da")}
+                    </span>
+                    <span>
+                      3h: {selectedBoat.price3h?.toLocaleString()}{" "}
+                      {t("booking.da")}
+                    </span>
+                    <span>
+                      4h: {selectedBoat.price4h?.toLocaleString()}{" "}
+                      {t("booking.da")}
+                    </span>
                   </div>
                 </div>
               </>
             ) : (
               <div className="text-center text-grey py-8 sm:py-12">
                 <p className="text-sm sm:text-base">
-                  اختر قارباً لعرض التفاصيل
+                  {t("booking.selectBoatMessage")}
                 </p>
               </div>
             )}

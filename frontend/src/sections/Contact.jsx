@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import logo from "../assets/logo01.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -19,6 +20,7 @@ import {
 import useBoatsStore from "../stores/boats.store";
 
 export default function Contact() {
+  const { t } = useTranslation();
   const { boats, fetchBoats } = useBoatsStore();
 
   // Fetch boats on mount
@@ -43,7 +45,7 @@ export default function Contact() {
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
       className="py-12 sm:py-16 md:py-20 bg-gradient-to-b from-gray-50 to-white"
-      dir="rtl"
+      // dir="rtl"
     >
       <div className="container px-4 sm:px-6">
         <div className="grid lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 items-start">
@@ -59,20 +61,19 @@ export default function Contact() {
             </div>
 
             {/* Title */}
-            <div className="text-right">
+            <div className="">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--color-black)]">
-                تواصل معنا
+                {t("contact.title")}
               </h2>
               <p className="text-[var(--color-grey)] mt-2 text-sm sm:text-base">
-                نحن هنا للإجابة على جميع استفساراتك ومساعدتك في حجز رحلتك
-                البحرية
+                {t("contact.subtitle")}
               </p>
             </div>
 
-            {/* Location Cards - FIX: Dynamic from boats */}
+            {/* Location Cards - Dynamic from boats */}
             <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg border border-gray-100">
               <h3 className="text-lg sm:text-xl font-bold text-[var(--color-blue)] mb-3 sm:mb-4 flex items-center gap-2">
-                <span>مواقعنا</span>
+                <span>{t("contact.ourLocations")}</span>
                 <FontAwesomeIcon
                   icon={faLocationDot}
                   className="text-[var(--color-gold)]"
@@ -95,36 +96,38 @@ export default function Contact() {
                   ))
                 ) : (
                   <div className="text-[var(--color-grey)] text-sm">
-                    جاري تحميل المواقع...
+                    {t("contact.loadingLocations")}
                   </div>
                 )}
               </div>
 
-              <div className="mt-4 pt-4 border-t border-gray-200">
-                <div className="flex items-center gap-3 flex-wrap sm:flex-nowrap">
-                  <span className="text-xs sm:text-sm text-[var(--color-grey)] sm:ml-auto order-3 sm:order-1 w-full sm:w-auto mt-1 sm:mt-0">
-                    المقر الإداري
+              <div className="mt-4 pt-4 border-t border-gray-200 ">
+                <div className="flex items-center gap-3 flex-wrap sm:flex-nowrap justify-between">
+                  <span className="text-xs sm:text-sm text-[var(--color-grey)]   w-full sm:w-auto mt-1 sm:mt-0">
+                    {t("contact.adminOffice")}
                   </span>
-                  <FontAwesomeIcon
-                    icon={faBuilding}
-                    className="text-[var(--color-gold)] w-4 sm:w-5 order-2"
-                  />
-                  <span className="font-medium text-sm sm:text-base order-1 sm:order-3">
-                    AADL 1700 الحديقة
-                  </span>
+                  <div>
+                    <FontAwesomeIcon
+                      icon={faBuilding}
+                      className="text-[var(--color-gold)] w-4 sm:w-5"
+                    />
+                    <span className="font-medium text-sm sm:text-base">
+                      {t("contact.adminOfficeAddress")}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Contact Details */}
-            <div className="space-y-3 sm:space-y-4 text-right">
+            <div className="space-y-3 sm:space-y-4 ">
               <div className="flex items-center gap-3">
                 <FontAwesomeIcon
                   icon={faMapPin}
                   className="text-[var(--color-gold)] text-lg sm:text-xl w-5 sm:w-6"
                 />
                 <span className="text-base sm:text-lg font-medium text-[var(--color-black)]">
-                  ولاية تيبازة، الجزائر
+                  {t("contact.region")}
                 </span>
               </div>
 
@@ -134,7 +137,7 @@ export default function Contact() {
                   className="text-[var(--color-gold)] text-base sm:text-lg w-5 sm:w-6"
                 />
                 <span className="text-[var(--color-grey)] text-sm sm:text-base">
-                  يومياً: 09:00 - 20:00
+                  {t("contact.hours")}
                 </span>
               </div>
 
@@ -183,7 +186,7 @@ export default function Contact() {
             <div className="relative">
               <div className="w-full h-[350px] sm:h-[400px] lg:h-[450px] xl:h-[500px] rounded-2xl overflow-hidden shadow-xl border-4 border-white">
                 <iframe
-                  title="موقعنا في تيبازة"
+                  title={t("contact.mapTitle")}
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3209.498773850989!2d2.466369!3d36.586667!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzbCsDM1JzEyLjAiTiAywrAyNyc1OS4zIkU!5e0!3m2!1sen!2sdz!4v1620000000000!5m2!1sen!2sdz"
                   className="w-full h-full border-0"
                   loading="lazy"
@@ -199,12 +202,12 @@ export default function Contact() {
                 className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 bg-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-lg text-xs sm:text-sm font-medium text-[var(--color-blue)] hover:bg-[var(--color-blue)] hover:text-white transition-all duration-300 flex items-center gap-1.5 sm:gap-2"
               >
                 <FontAwesomeIcon icon={faExternalLinkAlt} size="sm" />
-                <span>فتح في خرائط Google</span>
+                <span>{t("contact.openInMaps")}</span>
               </a>
             </div>
 
             <p className="text-center text-xs sm:text-sm text-[var(--color-grey)] mt-2 sm:mt-3">
-              اضغط على الخريطة للتنقل أو استخدم زر الفتح للحصول على الاتجاهات
+              {t("contact.mapHint")}
             </p>
           </div>
         </div>
