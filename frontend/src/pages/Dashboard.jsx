@@ -219,19 +219,16 @@ const BoatForm = ({ boat, onSubmit, onCancel, isSubmitting }) => {
         <label className="block text-sm font-medium text-grey mb-1">
           مكان القارب *
         </label>
-        <select
+        <input
+          type="text"
           name="place"
           value={formData.place}
           onChange={handleChange}
           className={`w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-blue/20 focus:border-blue outline-none ${
             errors.place ? "border-red" : "border-gray-300"
           }`}
-        >
-          <option value="">اختر المكان</option>
-          <option value="ميناء تيبازة">ميناء تيبازة</option>
-          <option value="ميناء شرشال">ميناء شرشال</option>
-          <option value="القرن الذهبي">القرن الذهبي</option>
-        </select>
+          placeholder="مثلاً: ميناء تيبازة"
+        />
         {errors.place && (
           <p className="text-red text-xs mt-1">{errors.place}</p>
         )}
