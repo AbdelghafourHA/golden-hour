@@ -377,7 +377,7 @@ export default function Booking() {
                   <option value={3}>{t("booking.threeHours")}</option>
                   <option value={4}>{t("booking.fourHours")}</option>
                 </select>
-                <p className="text-sm lg:text-base text-grey mt-1">
+                <p className="text-sm  text-grey mt-1">
                   {getBonusFromDuration(duration)}
                 </p>
               </div>
