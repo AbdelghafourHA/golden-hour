@@ -85,7 +85,6 @@ export default function Boats() {
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
       className="py-12 sm:py-16 md:py-20 bg-gray-50"
-      dir="rtl"
     >
       <div className="container px-4 sm:px-6">
         {/* Title */}
