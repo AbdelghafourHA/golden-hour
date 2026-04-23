@@ -206,7 +206,7 @@ export default function Booking() {
   };
 
   const getBonusFromDuration = (dur) => {
-    if (dur === 1) return "";
+    if (dur === 1) return t("booking.bonus1h");
     if (dur === 2) return t("booking.bonus2h");
     if (dur === 3) return t("booking.bonus3h");
     if (dur === 4) return t("booking.bonus4h");
