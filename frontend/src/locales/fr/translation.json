@@ -63,6 +63,9 @@
     "sending": "Envoi en cours...",
     "success": "Réservation envoyée avec succès! Nous vous contacterons pour confirmation.",
     "selectBoatMessage": "Sélectionnez un bateau pour voir les détails",
+    "bonus2h": "Vous recevrez un bonus de 30 minutes",
+    "bonus3h": "Vous recevrez un bonus de 1 heure",
+    "bonus4h": "Vous recevrez un bonus de 1 heure et 30 minutes",
     "errors": {
       "selectBoat": "Veuillez sélectionner un bateau",
       "selectDate": "Veuillez sélectionner une date",

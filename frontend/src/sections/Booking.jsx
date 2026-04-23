@@ -205,6 +205,14 @@ export default function Booking() {
     return placeMap[place] || place;
   };
 
+  const getBonusFromDuration = (dur) => {
+    if (dur === 1) return "";
+    if (dur === 2) return t("booking.bonus2h");
+    if (dur === 3) return t("booking.bonus3h");
+    if (dur === 4) return t("booking.bonus4h");
+    return "";
+  };
+
   if (boatsLoading && boats.length === 0) {
     return (
       <section className="py-12 sm:py-16 md:py-20 bg-white">
@@ -370,7 +378,7 @@ export default function Booking() {
                   <option value={4}>{t("booking.fourHours")}</option>
                 </select>
                 <p className="text-xs text-grey mt-1">
-                  {duration === 2 ? "hello" : "red"}
+                  {getBonusFromDuration(duration)}
                 </p>
               </div>
 
