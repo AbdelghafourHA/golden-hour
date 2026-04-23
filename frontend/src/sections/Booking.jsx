@@ -369,6 +369,9 @@ export default function Booking() {
                   <option value={3}>{t("booking.threeHours")}</option>
                   <option value={4}>{t("booking.fourHours")}</option>
                 </select>
+                <p className="text-xs text-grey mt-1">
+                  {duration === 2 ? "hello" : "red"}
+                </p>
               </div>
 
               {/* Time Slots */}
