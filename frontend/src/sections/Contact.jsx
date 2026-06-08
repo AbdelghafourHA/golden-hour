@@ -146,33 +146,42 @@ export default function Contact() {
                   icon={faPhone}
                   className="text-[var(--color-gold)] text-base sm:text-lg w-5 sm:w-6"
                 />
-                {/* <a
-                  href="tel:+213661348707"
+                <a
+                  href="tel:+213563380220"
                   className="text-[var(--color-grey)] hover:text-[var(--color-blue)] transition-colors text-sm sm:text-base"
                 >
-                  0661348707
-                </a> */}
+                  0563380220
+                </a>
+                <a
+                  href="tel:+213563380974"
+                  className="text-[var(--color-grey)] hover:text-[var(--color-blue)] transition-colors text-sm sm:text-base"
+                >
+                  0563380974
+                </a>
               </div>
             </div>
 
             {/* Social Media */}
             <div className="flex gap-5 sm:gap-6 text-xl sm:text-2xl justify-center md:justify-start">
               <a
-                href="#"
+                target="_blank"
+                href="https://www.facebook.com/share/1HB13z1r4V/"
                 className="text-[var(--color-grey)] hover:text-[var(--color-blue)] transition-all transform hover:scale-110"
                 aria-label="Facebook"
               >
                 <FontAwesomeIcon icon={faFacebook} />
               </a>
               <a
-                href="#"
+                target="_blank"
+                href="https://www.instagram.com/goldenhourvip?igsh=ZGppczdzZnltNTY2"
                 className="text-[var(--color-grey)] hover:text-[var(--color-pink)] transition-all transform hover:scale-110"
                 aria-label="Instagram"
               >
                 <FontAwesomeIcon icon={faInstagram} />
               </a>
               <a
-                href="#"
+                target="_blank"
+                href="https://wa.me/213563380220"
                 className="text-[var(--color-grey)] hover:text-[var(--color-green)] transition-all transform hover:scale-110"
                 aria-label="WhatsApp"
               >
