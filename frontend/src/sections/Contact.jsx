@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFacebook,
   faInstagram,
+  faTiktok,
   faWhatsapp,
 } from "@fortawesome/free-brands-svg-icons";
 import {
@@ -178,6 +179,14 @@ export default function Contact() {
                 aria-label="Instagram"
               >
                 <FontAwesomeIcon icon={faInstagram} />
+              </a>
+              <a
+                target="_blank"
+                href="https://www.tiktok.com/@golden.hour755?_r=1&_t=ZS-973CUbf6zO4"
+                className="text-[var(--color-grey)] hover:text-[var(--color-pink)] transition-all transform hover:scale-110"
+                aria-label="Instagram"
+              >
+                <FontAwesomeIcon icon={faTiktok} />
               </a>
               <a
                 target="_blank"

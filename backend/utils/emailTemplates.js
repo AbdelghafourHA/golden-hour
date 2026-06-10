@@ -604,7 +604,7 @@ export const generateCustomerConfirmationEmail = (order) => {
       
       شكراً لاختيارك Golden Hour! نتمنى لك رحلة ممتعة.
       
-      📍 ولاية تيبازة، الجزائر | 📞 0661348707
+      📍 ولاية تيبازة، الجزائر | 📞 0563380220
     `,
   };
 };
